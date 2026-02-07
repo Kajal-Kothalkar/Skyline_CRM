@@ -1,0 +1,69 @@
+{% extends "crm/base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>Pipeline Overview</h2>
+    <div class="grid">
+        {% for status in status_breakdown %}
+            <div class="card">
+                <p class="muted">{{ status.status|capfirst }}</p>
+                <h3>{{ status.total }}</h3>
+            </div>
+        {% empty %}
+            <p class="muted">No customers yet. Add your first customer to get started.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <div class="actions" style="justify-content: space-between; align-items: center;">
+            <h2>Recent Customers</h2>
+            <a class="btn" href="{% url 'crm:customer_create' %}">Add Customer</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in recent_customers %}
+                    <tr>
+                        <td><a href="{% url 'crm:customer_detail' customer.pk %}">{{ customer.full_name }}</a></td>
+                        <td>{{ customer.company|default:"-" }}</td>
+                        <td><span class="status-pill">{{ customer.get_status_display }}</span></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3" class="muted">No customers yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card">
+        <h2>Latest Interactions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for interaction in recent_interactions %}
+                    <tr>
+                        <td><a href="{% url 'crm:customer_detail' interaction.customer.pk %}">{{ interaction.customer.full_name }}</a></td>
+                        <td>{{ interaction.get_interaction_type_display }}</td>
+                        <td>{{ interaction.created_at|date:"M d, Y" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3" class="muted">No interactions logged yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "crm/base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>Delete {{ customer.full_name }}?</h2>
+    <p>This action cannot be undone.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-secondary" type="submit">Confirm Delete</button>
+        <a class="btn" href="{% url 'crm:customer_detail' customer.pk %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

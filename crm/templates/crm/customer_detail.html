@@ -1,0 +1,64 @@
+{% extends "crm/base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="actions" style="justify-content: space-between; align-items: center;">
+        <div>
+            <h2>{{ object.full_name }}</h2>
+            <p class="muted">{{ object.company|default:"No company" }}</p>
+        </div>
+        <div class="actions">
+            <a class="btn" href="{% url 'crm:customer_update' object.pk %}">Edit</a>
+            <a class="btn btn-secondary" href="{% url 'crm:interaction_create' object.pk %}">Log Interaction</a>
+        </div>
+    </div>
+    <div class="grid">
+        <div>
+            <p class="muted">Email</p>
+            <p>{{ object.email|default:"-" }}</p>
+        </div>
+        <div>
+            <p class="muted">Phone</p>
+            <p>{{ object.phone|default:"-" }}</p>
+        </div>
+        <div>
+            <p class="muted">Status</p>
+            <p><span class="status-pill">{{ object.get_status_display }}</span></p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Interactions</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Notes</th>
+                <th>Date</th>
+                <th>Next Follow-up</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for interaction in object.interactions.all %}
+                <tr>
+                    <td>{{ interaction.get_interaction_type_display }}</td>
+                    <td>{{ interaction.notes }}</td>
+                    <td>{{ interaction.created_at|date:"M d, Y" }}</td>
+                    <td>{{ interaction.next_follow_up|date:"M d, Y"|default:"-" }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4" class="muted">No interactions logged.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <form method="post" action="{% url 'crm:customer_delete' object.pk %}">
+        {% csrf_token %}
+        <p>Remove this customer from the pipeline?</p>
+        <button class="btn btn-secondary" type="submit">Delete Customer</button>
+    </form>
+</div>
+{% endblock %}
