@@ -1,0 +1,13 @@
+{% extends "crm/base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>{{ mode }} Customer</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn" type="submit">{{ mode }} Customer</button>
+        <a class="btn btn-secondary" href="{% url 'crm:customer_list' %}">Cancel</a>
+    </form>
+</div>
+{% endblock %}
